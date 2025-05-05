@@ -18,6 +18,8 @@ int convertTokenToInt(char* token, int* input);
 int checkMagicRow(int line[], int cubeLen, int expectedSum);
 int checkMagicCols(int cubeLen, int cube[][N], int expectedSum);
 int checkMagicDiags(int cubeLen, int cube[][N], int expectedSum);
+void printResult(int cubeLen, int cube[][N], int isMagic);
+int checkRepeatVals(int inputsLen, int inputsArr[]);
 int computeSum(int n);
 
 int main() {
@@ -28,6 +30,7 @@ int main() {
     isError = getInput(N_SQR, values);
     if (!isError){
         isMagic = orderValuesIntoCube(N, cube, N_SQR, values);
+        printResult(N, cube, isMagic);
     }
     return isError;
 }
@@ -37,21 +40,23 @@ int getInput(int inputsLen, int inputsArr[]) {
     char line[MAX_LINE_LEN];
     int input;
     printf("please enter %d integer values separated by white spaces\n", inputsLen);
-    printf("the values shoule be lower then then %d\n", inputsLen-1);
+    printf("the values shoule be lower then then %d\n", inputsLen + 1);
     while (fgets(line, MAX_LINE_LEN, stdin) && !isError) {
         char *token = strtok(line, SPACES);
         while (token != NULL && !isError) {
-            if (argCount > inputsLen) {
-                fprintf(stderr, "to many values in the input\n");
+            if (argCount >= inputsLen) {
+                fprintf(stderr, "ERROR: to many values in the input\n");
                 isError = TRUE;
             }
+            if (!isError) {
             isError = convertTokenToInt(token, &input);
             inputsArr[argCount++] = input;
             token = strtok(NULL, SPACES);
+            }
         }
     }
-    if (argCount < inputsLen) {
-        fprintf(stderr, "not enough values in input\n");
+    if (!isError && argCount < inputsLen) {
+        fprintf(stderr, "ERROR: not enough values in input\n");
         isError = TRUE;
     }
     return isError;
@@ -69,7 +74,7 @@ int convertTokenToInt(char *token, int *input)
         isError = TRUE;
     }
     if (isError) {
-        fprintf(stderr, "invalid input '%s'.\n", token);
+        fprintf(stderr, "ERROR invalid input '%s'.\n", token);
     }
     return isError;
 }
@@ -86,6 +91,7 @@ int orderValuesIntoCube(int cubeLen, int cube[][N], int inputsLen, int inputsArr
     }
     isMagic = (!isMagic) ? isMagic : checkMagicCols(cubeLen, cube, expectedSum);
     isMagic = (!isMagic) ? isMagic : checkMagicDiags(cubeLen, cube, expectedSum);
+    isMagic = (!isMagic) ? isMagic : checkRepeatVals(inputsLen, inputsArr);
     return isMagic;
 }
 
@@ -124,4 +130,29 @@ int checkMagicDiags(int cubeLen, int cube[][N], int expectedSum) {
     diag = (expectedSum == sum);
     aDiag = (expectedSum == aSum);
     return diag && aDiag;
+}
+
+void printResult(int cubeLen, int cube[][N], int isMagic) {
+    int i, j;
+    fprintf(stderr, "\n");
+    for (i = 0; i < cubeLen; i++) {
+        for (j = 0; j < cubeLen; j++) {
+            fprintf(stdout, "%3d", cube[i][j]);
+        }
+        fprintf(stdout, "\n");
+    }
+    fprintf(stdout, "\n%s\n", ((isMagic) ? "This Square is a Magic Square" : "This Square is Not a Magic Square"));
+} 
+
+int checkRepeatVals(int inputsLen, int inputsArr[]) {
+    int foundVals[(N_SQR + 1)] = {FALSE};
+    int i, tmp, isMagic = TRUE;
+    for (i = 0; i < inputsLen; i++) {
+        tmp = inputsArr[i];
+        if (tmp > inputsLen || foundVals[tmp]) {
+            isMagic = FALSE;
+        }
+        foundVals[tmp] = TRUE;
+    }
+    return isMagic;
 }
