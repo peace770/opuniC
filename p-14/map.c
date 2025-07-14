@@ -35,7 +35,7 @@ MapEntry* get(Map_t* map, const char* key) {
         return NULL;
     }
     while (entry != NULL) {
-        if (strcmp(entry->identifier, key) != 0){
+        if (strcmp(entry->identifier, key) != 0) {
             entry = entry->next;
         } 
         else {
@@ -71,7 +71,7 @@ int check_map(Map_t* map, const char* key) {
         return success;
     }
     while (entry != NULL) {
-        if (strcmp(entry->identifier, key) != 0){
+        if (strcmp(entry->identifier, key) != 0) {
             entry = entry->next;
         } 
         else {
@@ -89,7 +89,7 @@ MapEntry* pop(Map_t* map, const char* key) {
         return NULL;
     }
     while (entry != NULL) {
-        if (strcmp(entry->identifier, key) != 0){
+        if (strcmp(entry->identifier, key) != 0) {
             prev = entry;
             entry = entry->next;
         } 
@@ -107,7 +107,7 @@ MapEntry* pop(Map_t* map, const char* key) {
 }
 
 void entry_destroy(MapEntry* entry) {
-    if (entry == NULL){
+    if (entry == NULL) {
         return;
     }
     entry_destroy(entry->next);
@@ -117,7 +117,7 @@ void entry_destroy(MapEntry* entry) {
 
 void map_destroy(Map_t* map) {
     int i;
-    for (i = 0; i < HASHMAP_SIZE; i++){
+    for (i = 0; i < HASHMAP_SIZE; i++) {
         entry_destroy(map->map[i]);
     }
     free(map);

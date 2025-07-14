@@ -1,5 +1,5 @@
 #ifndef TAGGED_UNION_H
-#define TAGGED_UNION_H
+#define TAGGED_UNION_H 1
 
 
 #ifndef _STDLIB_H
