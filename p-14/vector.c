@@ -4,7 +4,7 @@
 
 struct Vector
 {
-    int* items;
+    char** items;
     size_t  originalSize;
     size_t  blockSize;
     size_t  currSize;
@@ -12,24 +12,19 @@ struct Vector
 };
 
 
-Vector_t* VectorCreate(size_t size, size_t blockSize)
-{
+Vector_t* VectorCreate(size_t size, size_t blockSize) {
     Vector_t* vector;
-
-    if ((size == 0))
-    {
+    if ((size == 0)) {
         return NULL;
     }
 
     vector = (Vector_t*)malloc(sizeof(Vector_t));
-    if (!vector)
-    {
+    if (!vector) {
         return NULL;
     }
 
-    vector->items = (int*)malloc(sizeof(int) * size);
-    if (!vector->items)
-    {
+    vector->items = (char**)malloc(sizeof(char*) * size);
+    if (!vector->items) {
         free(vector);
         return NULL;
     }
@@ -42,36 +37,32 @@ Vector_t* VectorCreate(size_t size, size_t blockSize)
     return vector;
 }
 
-void VectorDestroy(Vector_t* vector)
-{
-    if (vector)
-    {
+void VectorDestroy(Vector_t* vector) {
+    int i = vector->nItems;
+    if (vector) {
+        while (i-- > 0) {
+           free(vector->items[i]);
+        }
         free(vector->items);
         free(vector);
     }
 }
 
-int VectorAdd(Vector_t* vector, int item)
-{
-    int* tmp;
+int VectorAdd(Vector_t* vector, char* item) {
+    char** tmp;
 
-    if (!vector)
-    {
+    if (!vector) {
         return 1;
     }
 
-    if (vector->nItems == vector->currSize)
-    {
+    if (vector->nItems == vector->currSize) {
         // Handle overflow case.
-        if (vector->blockSize == 0)
-        {
+        if (vector->blockSize == 0) {
             return 1;
         }
-        tmp = (int*)realloc(vector->items,
-            sizeof(int) * (vector->currSize + vector->blockSize));
+        tmp = (char**)realloc(vector->items, sizeof(char*) * (vector->currSize + vector->blockSize));
 
-        if (NULL == tmp)
-        {
+        if (NULL == tmp) {
             return 1;
         }
         vector->items = tmp;
@@ -84,27 +75,21 @@ int VectorAdd(Vector_t* vector, int item)
     return 0;
 }
 
-int VectorDelete(Vector_t* vector, int* item)
-{
-    int* tmp;
-
-    if (!vector || !item)
-    {
+int VectorDelete(Vector_t* vector, char* item) {
+    char** tmp;
+    if (!vector || !item) {
         return 1;
     }
-
-    if (vector->nItems == 0)
-    {
+    
+    if (vector->nItems == 0) {
         return 1;
     }
 
     if ((vector->currSize > vector->originalSize) &&
         (vector->nItems <= vector->currSize - (vector->blockSize * REALLOC_FACTOR)))
     {
-        tmp = (int*)realloc(vector->items,
-            sizeof(int) * (vector->currSize - vector->blockSize));
-        if (!tmp)
-        {
+        tmp = (char**)realloc(vector->items, sizeof(char*) * (vector->currSize - vector->blockSize));
+        if (!tmp){
             return (1);
         }
         vector->items = tmp;
@@ -118,20 +103,16 @@ int VectorDelete(Vector_t* vector, int* item)
 }
 
 /* Index from 1 */
-int VectorGet(Vector_t* vector, size_t index, int* item)
-{
-    if (!vector || !item)
-    {
+int VectorGet(Vector_t* vector, size_t index, char* item) {
+    if (!vector || !item) {
         return 1;
     }
 
-    if (index == 0)
-    {
+    if (index == 0) {
         return 1;
     }
 
-    if (index > vector->nItems)
-    {
+    if (index > vector->nItems) {
         return (1);
     }
 
@@ -140,61 +121,31 @@ int VectorGet(Vector_t* vector, size_t index, int* item)
     return 0;
 }
 
-/* Index from 1 */
-int VectorSet(Vector_t* vector, size_t index, int item)
-{
-    if (!vector)
-    {
+
+int VectorSet(Vector_t* vector, size_t index, char* item) {
+    if (!vector) {
         return 1;
     }
 
-    if (index == 0)
-    {
+    if (index < 0) {
         return 1;
     }
 
-    if (index > vector->nItems)
-    {
+    if (index > vector->nItems) {
         return (1);
     }
 
-    *(vector->items + index - 1) = item;
+    *(vector->items + index) = item;
 
     return 0;
 }
 
-int VectorItemsNum(Vector_t* vector, size_t* numOfItems)
-{
-    if (!vector || !numOfItems)
-    {
+int VectorItemsNum(Vector_t* vector, size_t* numOfItems) {
+    if (!vector || !numOfItems) {
         return 1;
     }
 
     *numOfItems = vector->nItems;
 
     return 0;
-}
-
-
-/*  Unit-Test functions  */
-void VectorPrint(Vector_t* vector)
-{
-    int i;
-
-    if (!vector)
-    {
-        printf("\n-------------------------------------------------------\n");
-        printf("vector details> Vector is not initialized.\n");
-        printf("-------------------------------------------------------\n");
-        return;
-    }
-
-    printf("\n-------------------------------------------------------\n");
-    printf("vector details> nItems : %zu, size: %zu, blockSize : %zu \n", vector->nItems, vector->currSize, vector->blockSize);
-    printf("vector items>   ");
-    for (i = 0; i < vector->nItems; ++i)
-    {
-        printf("%d ", vector->items[i]);
-    }
-    printf("\n-------------------------------------------------------\n");
 }

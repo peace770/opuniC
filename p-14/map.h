@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include "tagged_union.h"
 
 #if !defined(TRUE) && !defined(FALSE)
 #define TRUE 1
