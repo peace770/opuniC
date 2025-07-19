@@ -31,7 +31,7 @@ int fill_union(Tunion* Union, dataTypes type, void* dataptr) {
         break;
     case MACRO:
         Union->type = MACRO;
-        Union->macro = (char*) dataptr;
+        Union->macro = (char**) dataptr;
         found = MACRO;
         break;
     case CODE:

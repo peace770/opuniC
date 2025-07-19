@@ -76,6 +76,7 @@ int check_map(Map_t* map, const char* key) {
         } 
         else {
             success = 1;
+            break;
         }
     }
     return success;

@@ -18,7 +18,7 @@ typedef struct tagged_union
         int** mat;
         char* label;
         char* label;
-        char* macro;
+        char** macro;
         char* code;
     };
 }Tunion;

@@ -149,3 +149,11 @@ int VectorItemsNum(Vector_t* vector, size_t* numOfItems) {
 
     return 0;
 }
+
+int  VectorClear(Vector_t* vector) {
+    if (!vector) {
+        return 1;
+    }
+    vector->nItems = 0;   
+    return 0;
+}

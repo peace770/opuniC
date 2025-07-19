@@ -19,11 +19,15 @@ int   VectorAdd(Vector_t* vector, char*  item);
 /* Delete item from the end. */
 int   VectorDelete(Vector_t* vector, char* item);
 
+int VectorClear(Vector_t* vector);
+
 /* The Index range in the following functions is : 1..numOfItems */
 int   VectorGet(Vector_t* vector, size_t index, char* item);
 
 int   VectorSet(Vector_t* vector, size_t index, char* item);
 
 int   VectorItemsNum(Vector_t* vector, size_t* numOfItems);
+
+int  VectorClear(Vector_t* vector);
 
 #endif /*__VECTOR_H__*/
