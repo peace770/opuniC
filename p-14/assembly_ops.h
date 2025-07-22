@@ -35,7 +35,7 @@ const char* disallowed_names[] =
     "r7",
 };
 
-const char* assembly_ops[16] =
+const char* assembly_ops[] = 
 {
     "mov",
     "cmp",

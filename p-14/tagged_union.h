@@ -16,11 +16,11 @@ typedef struct tagged_union
         int* arr;
         char* str;
         int** mat;
-        char* label;
-        char* label;
+        char* entryLabel;
+        char* externLabel;
         char** macro;
         char* code;
-    };
+    }u;
 }Tunion;
 
 /*input data to the union. gets a pointer to a tagged union,

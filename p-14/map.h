@@ -16,20 +16,22 @@
 #define HASHMAP_SIZE 128
 #define HASH_PRIME 1990661
 
-typedef struct Map
-{
-    MapEntry* map[HASHMAP_SIZE];
-    char* name;
-} Map_t;
+typedef struct MapMember* MapLink;
 
 typedef struct MapMember
 {
-    MapEntry* next;
+    MapLink* next;
     char* identifier;
     Tunion node_data;
     unsigned int start_address;
     size_t len;
 } MapEntry;
+
+typedef struct Map
+{
+    MapEntry* map[HASHMAP_SIZE];
+    char* name;
+} Map_t;
 
 /*initialize a map, returns a pointer to the map, NULL on failure*/
 Map_t* map_init(const char* name);

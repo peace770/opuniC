@@ -56,7 +56,7 @@ int VectorAdd(Vector_t* vector, char* item) {
     }
 
     if (vector->nItems == vector->currSize) {
-        // Handle overflow case.
+        /* Handle overflow case.*/
         if (vector->blockSize == 0) {
             return 1;
         }
@@ -96,7 +96,7 @@ int VectorDelete(Vector_t* vector, char* item) {
         vector->currSize -= vector->blockSize;
     }
 
-    *item = *(vector->items + vector->nItems - 1);
+    item = *(vector->items + vector->nItems - 1);
     --vector->nItems;
 
     return 0;
@@ -116,7 +116,7 @@ int VectorGet(Vector_t* vector, size_t index, char* item) {
         return (1);
     }
 
-    *item = *(vector->items + index - 1);
+    item = *(vector->items + index - 1);
 
     return 0;
 }

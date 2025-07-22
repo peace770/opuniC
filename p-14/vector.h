@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Forward declaration:
+/* Forward declaration:*/
 typedef struct Vector Vector_t;
 
 /* size      - The initial allocation size.

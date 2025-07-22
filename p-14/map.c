@@ -1,7 +1,7 @@
 #include "map.h"
 #include "tagged_union.h"
 
-static unsigned int hash(char* key, size_t length) {
+static unsigned int hash(const char* key, size_t length) {
     int i = 0;
     unsigned int hash = HASH_PRIME;
     while (i != length) {
@@ -148,6 +148,6 @@ MapEntry* empty_entry_init() {
     entry->start_address = 0;
     entry->next = NULL;
     entry->node_data.type = NONE;
-    entry->node_data.null = NULL;
+    entry->node_data.u.null = NULL;
     return entry;
 }
