@@ -21,7 +21,7 @@ Map_t* map_init(const char* name) {
     if (map == NULL) {
         return NULL;
     }
-    map -> name = name;
+    map->name = (char*) name;
     for (i = 0; i < HASHMAP_SIZE; i++) {
         map->map[i] = NULL;
     }
@@ -107,17 +107,54 @@ MapEntry* pop(Map_t* map, const char* key) {
     return NULL;
 }
 
-void entry_destroy(MapEntry* entry) {
+void* entry_destroy(MapEntry* entry) {
+    int i;
     if (entry == NULL) {
-        return;
+        return NULL;
     }
     entry_destroy(entry->next);
+    free(entry->identifier);
+    switch (entry->node_data.type)
+    {
+    case DATA:
+        free(entry->node_data.u.arr);
+        break;
+    case STRING:
+        free(entry->node_data.u.str);
+        break;
+    case MAT:
+        for (i=0; i<entry->len;i++){
+            free(entry->node_data.u.mat[i]);
+        }
+        free(entry->node_data.u.mat);
+        break;
+    case ENTRY:
+        free(entry->node_data.u.entryLabel);
+        break;
+    case EXTERN:
+        free(entry->node_data.u.externLabel);
+        break;
+    case MACRO:
+        for (i=0; i<entry->len;i++){
+           free(entry->node_data.u.macro[i]); 
+        }
+        free(entry->node_data.u.macro);
+        break;
+    case CODE:
+        free(entry->node_data.u.code);
+        break;
+    default:
+        break;
+    }
     free(entry);
-    return;
+    return NULL;
 }
 
-void map_destroy(Map_t* map) {
+void* map_destroy(Map_t* map) {
     int i;
+    if (!map) {
+        return NULL;
+    }
     for (i = 0; i < HASHMAP_SIZE; i++) {
         entry_destroy(map->map[i]);
     }
@@ -130,7 +167,8 @@ MapEntry* entry_init(const char* label, size_t len, unsigned int start_address, 
     if (entry == NULL) {
         return NULL;
     }
-    entry->identifier = label;
+    entry->identifier = (char*) malloc(sizeof(char) * strlen(label)+1);
+    strcpy(entry->identifier, label);
     entry->len = len;
     entry->start_address = start_address;
     entry->next = NULL;
@@ -150,4 +188,76 @@ MapEntry* empty_entry_init() {
     entry->node_data.type = NONE;
     entry->node_data.u.null = NULL;
     return entry;
+}
+
+void print_entry(MapEntry* entry, int index) {
+    int i, *j;
+    if (!entry) {
+        printf("MapMember at map index %d details> NULL.\n", index);
+        printf("-----\n");
+        return;
+    }
+    printf("MapMember at map index %d details> identifier : %s, len: %lu, start_addres: %u tag: %d, has-next? %s.\n",index, entry->identifier, entry->len, entry->start_address, entry->node_data.type, (entry->next)? "true" :"false");
+    printf("MapMember data>\n");
+    switch (entry->node_data.type)
+    {
+    case DATA:
+        for (i=0; i<entry->len;i++){
+            printf("%4d,", entry->node_data.u.arr[i]);
+        }
+        printf("\n");
+        break;
+    case STRING:
+        printf("%s", entry->node_data.u.str);
+        break;
+    case MAT:
+        for (i=0; i<entry->len;i++){
+            printf("%-2d: [", i);
+            j = entry->node_data.u.mat[i];
+            while (j != NULL){
+                printf("%3d,", *j++);
+            }
+            printf("]\n");
+        }
+        break;
+    case ENTRY:
+        printf("%s", entry->node_data.u.entryLabel);
+        break;
+    case EXTERN:
+        printf("%s", entry->node_data.u.externLabel);
+        break;
+    case MACRO:
+        for (i=0; i<entry->len;i++){
+           printf("%s", entry->node_data.u.macro[i]); 
+        }
+        break;
+    case CODE:
+        printf("%s", entry->node_data.u.code);
+        break;
+    default:
+        printf("%s\n", "NULL");
+        break;
+    }
+    printf("-----\n");
+    if (entry->next) {
+        print_entry(entry->next, index);
+    }
+}
+
+void print_map(Map_t* map) {
+    int i;
+    if (!map) {
+        printf("\n-------------------------------------------------------\n");
+        printf("Map details> Map is not initialized.\n");
+        printf("-------------------------------------------------------\n");
+        return;
+    }
+    printf("\n-------------------------------------------------------\n");
+    printf("Map details> name : %s.\n", map->name);
+    printf("Map data>\n");
+    printf("-----\n");
+    for (i = 0; i < HASHMAP_SIZE; i++) {
+        print_entry(map->map[i], i);
+    }
+    printf("-------------------------------------------------------\n");
 }

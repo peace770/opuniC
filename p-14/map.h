@@ -20,7 +20,7 @@ typedef struct MapMember* MapLink;
 
 typedef struct MapMember
 {
-    MapLink* next;
+    MapLink next;
     char* identifier;
     Tunion node_data;
     unsigned int start_address;
@@ -60,9 +60,13 @@ int check_map(Map_t* map, const char* key);
 MapEntry* pop(Map_t* map, const char* key);
 
 /*frees the map and all entries within it*/
-void map_destroy(Map_t* map);
+void* map_destroy(Map_t* map);
 
 /*frees an entry or an entire chain of entries until entry->next == NULL*/
-void entry_destroy(MapEntry* entry);
+void* entry_destroy(MapEntry* entry);
+
+void print_entry(MapEntry* entry, int i);
+
+void print_map(Map_t* map);
 
 #endif

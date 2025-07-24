@@ -3,6 +3,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+#ifndef MAX_READ
+#define MAX_READ 82
+#endif
 
 /* Forward declaration:*/
 typedef struct Vector Vector_t;
@@ -17,17 +22,19 @@ void     VectorDestroy(Vector_t* vector);
 int   VectorAdd(Vector_t* vector, char*  item); 
 
 /* Delete item from the end. */
-int   VectorDelete(Vector_t* vector, char* item);
+int   VectorDelete(Vector_t* vector, char* item, size_t max_read);
 
 int VectorClear(Vector_t* vector);
 
 /* The Index range in the following functions is : 1..numOfItems */
-int   VectorGet(Vector_t* vector, size_t index, char* item);
+int   VectorGet(Vector_t* vector, size_t index, char* item, size_t max_read);
 
 int   VectorSet(Vector_t* vector, size_t index, char* item);
 
 int   VectorItemsNum(Vector_t* vector, size_t* numOfItems);
 
 int  VectorClear(Vector_t* vector);
+
+void VectorPrint(Vector_t* vector); 
 
 #endif /*__VECTOR_H__*/

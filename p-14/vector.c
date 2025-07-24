@@ -50,11 +50,9 @@ void VectorDestroy(Vector_t* vector) {
 
 int VectorAdd(Vector_t* vector, char* item) {
     char** tmp;
-
     if (!vector) {
         return 1;
     }
-
     if (vector->nItems == vector->currSize) {
         /* Handle overflow case.*/
         if (vector->blockSize == 0) {
@@ -68,16 +66,15 @@ int VectorAdd(Vector_t* vector, char* item) {
         vector->items = tmp;
         vector->currSize += vector->blockSize;
     }
-
     *(vector->items + vector->nItems) = item;
     ++vector->nItems;
 
     return 0;
 }
 
-int VectorDelete(Vector_t* vector, char* item) {
+int VectorDelete(Vector_t* vector, char* item, size_t max_read) {
     char** tmp;
-    if (!vector || !item) {
+    if (!vector) {
         return 1;
     }
     
@@ -96,27 +93,23 @@ int VectorDelete(Vector_t* vector, char* item) {
         vector->currSize -= vector->blockSize;
     }
 
-    item = *(vector->items + vector->nItems - 1);
+    strncpy(item, *(vector->items + vector->nItems - 1), max_read);
     --vector->nItems;
 
     return 0;
 }
 
-/* Index from 1 */
-int VectorGet(Vector_t* vector, size_t index, char* item) {
-    if (!vector || !item) {
+int VectorGet(Vector_t* vector, size_t index, char* item, size_t max_read) {
+    if (!vector) {
         return 1;
     }
-
-    if (index == 0) {
+    if (index < 0) {
         return 1;
     }
-
     if (index > vector->nItems) {
-        return (1);
+        return 1;
     }
-
-    item = *(vector->items + index - 1);
+    strncpy(item, *(vector->items + index), max_read);
 
     return 0;
 }
@@ -132,7 +125,7 @@ int VectorSet(Vector_t* vector, size_t index, char* item) {
     }
 
     if (index > vector->nItems) {
-        return (1);
+        return 1;
     }
 
     *(vector->items + index) = item;
@@ -151,9 +144,36 @@ int VectorItemsNum(Vector_t* vector, size_t* numOfItems) {
 }
 
 int  VectorClear(Vector_t* vector) {
+    int i;
     if (!vector) {
         return 1;
     }
-    vector->nItems = 0;   
+    for (i = 0; i < vector->nItems; i++) {
+        free(vector->items[i]);
+    }
+    vector->nItems = 0;  
+    VectorPrint(vector);
     return 0;
+}
+
+void VectorPrint(Vector_t* vector)
+{
+    int i;
+
+    if (!vector)
+    {
+        printf("\n-------------------------------------------------------\n");
+        printf("vector details> Vector is not initialized.\n");
+        printf("-------------------------------------------------------\n");
+        return;
+    }
+
+    printf("\n-------------------------------------------------------\n");
+    printf("vector details> nItems : %lu, size: %lu, blockSize : %lu \n", vector->nItems, vector->currSize, vector->blockSize);
+    printf("vector items>\n");
+    for (i = 0; i < vector->nItems; ++i)
+    {
+        printf("%dth item: %s", i+1,vector->items[i]);
+    }
+    printf("\n-------------------------------------------------------\n");
 }
