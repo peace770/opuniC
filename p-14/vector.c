@@ -1,4 +1,5 @@
 #include "vector.h"
+#include "errors.h"
 
 #define REALLOC_FACTOR 2
 
@@ -38,8 +39,9 @@ Vector_t* VectorCreate(size_t size, size_t blockSize) {
 }
 
 void VectorDestroy(Vector_t* vector) {
-    int i = vector->nItems;
+    int i;
     if (vector) {
+        i = vector->nItems;
         while (i-- > 0) {
            free(vector->items[i]);
         }
@@ -51,17 +53,17 @@ void VectorDestroy(Vector_t* vector) {
 int VectorAdd(Vector_t* vector, char* item) {
     char** tmp;
     if (!vector) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
     if (vector->nItems == vector->currSize) {
         /* Handle overflow case.*/
         if (vector->blockSize == 0) {
-            return 1;
+            return ERR_VECTOR_OVERFLOW;
         }
         tmp = (char**)realloc(vector->items, sizeof(char*) * (vector->currSize + vector->blockSize));
 
         if (NULL == tmp) {
-            return 1;
+            return ERR_OOM;
         }
         vector->items = tmp;
         vector->currSize += vector->blockSize;
@@ -69,17 +71,17 @@ int VectorAdd(Vector_t* vector, char* item) {
     *(vector->items + vector->nItems) = item;
     ++vector->nItems;
 
-    return 0;
+    return ERR_OK;
 }
 
 int VectorDelete(Vector_t* vector, char* item, size_t max_read) {
     char** tmp;
     if (!vector) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
     
     if (vector->nItems == 0) {
-        return 1;
+        return ERR_ILLEGAL_OPERATION;
     }
 
     if ((vector->currSize > vector->originalSize) &&
@@ -87,7 +89,7 @@ int VectorDelete(Vector_t* vector, char* item, size_t max_read) {
     {
         tmp = (char**)realloc(vector->items, sizeof(char*) * (vector->currSize - vector->blockSize));
         if (!tmp){
-            return (1);
+            return ERR_OOM;
         }
         vector->items = tmp;
         vector->currSize -= vector->blockSize;
@@ -96,64 +98,64 @@ int VectorDelete(Vector_t* vector, char* item, size_t max_read) {
     strncpy(item, *(vector->items + vector->nItems - 1), max_read);
     --vector->nItems;
 
-    return 0;
+    return ERR_OK;
 }
 
 int VectorGet(Vector_t* vector, size_t index, char* item, size_t max_read) {
     if (!vector) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
     if (index < 0) {
-        return 1;
+        return ERR_ILLEGAL_OPERATION;
     }
     if (index > vector->nItems) {
-        return 1;
+        return ERR_ILLEGAL_OPERATION;
     }
     strncpy(item, *(vector->items + index), max_read);
 
-    return 0;
+    return ERR_OK;
 }
 
 
 int VectorSet(Vector_t* vector, size_t index, char* item) {
     if (!vector) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
 
     if (index < 0) {
-        return 1;
+        return ERR_ILLEGAL_OPERATION;
     }
 
     if (index > vector->nItems) {
-        return 1;
+        return ERR_ILLEGAL_OPERATION;
     }
 
     *(vector->items + index) = item;
 
-    return 0;
+    return ERR_OK;
 }
 
 int VectorItemsNum(Vector_t* vector, size_t* numOfItems) {
     if (!vector || !numOfItems) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
 
     *numOfItems = vector->nItems;
 
-    return 0;
+    return ERR_OK;
 }
 
 int  VectorClear(Vector_t* vector) {
     int i;
     if (!vector) {
-        return 1;
+        return ERR_MEM_NOT_INIT;
     }
     for (i = 0; i < vector->nItems; i++) {
         free(vector->items[i]);
     }
     vector->nItems = 0;  
     VectorPrint(vector);
-    return 0;
+    return ERR_OK;
 }
 
 void VectorPrint(Vector_t* vector)

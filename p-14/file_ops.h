@@ -13,7 +13,7 @@ FILE* open_file(const char* file_name, char* file_ext, char* mode);
 /*reads a line from file using fgets(), buffer must be at least 1 byte longer then max_read to avoid memory corruption.
 returns a pointer to the start of the line, or NULL on failure to read from file and EOF.
 its advisable to check feof() in such cases.*/
-char* read_line(FILE* file, int max_read, char* buffer);
+char* read_line(FILE* file, int max_read, char* buffer, int* err);
 
 /*wraps fputs(), returns a non-negative number on success, EOF on error.*/
 int write_line(FILE* file, char* buffer);

@@ -46,11 +46,11 @@ MapEntry* get(Map_t* map, const char* key) {
 }
 
 int insert(Map_t* map, MapEntry* entry) {
-    int success = 0;
+    int success = FALSE;
     unsigned int index = hash(entry->identifier, strlen(entry->identifier));
     if (NULL == map->map[index]) {
         map->map[index] = entry;
-        success = 1;
+        success = TRUE;
     } 
     else {
         MapEntry* head = map->map[index];
@@ -58,13 +58,13 @@ int insert(Map_t* map, MapEntry* entry) {
             head = head->next;
         }
         head->next = entry;
-        success = 1;
+        success = TRUE;
     } 
     return success;
 }
 
 int check_map(Map_t* map, const char* key) {
-    int success = 0;
+    int success = FALSE;
     unsigned int index = hash(key, strlen(key));
     MapEntry* entry = map->map[index];
     if (NULL == entry) {
@@ -75,7 +75,7 @@ int check_map(Map_t* map, const char* key) {
             entry = entry->next;
         } 
         else {
-            success = 1;
+            success = TRUE;
             break;
         }
     }
@@ -156,7 +156,7 @@ void* map_destroy(Map_t* map) {
         return NULL;
     }
     for (i = 0; i < HASHMAP_SIZE; i++) {
-        entry_destroy(map->map[i]);
+        map->map[i] = entry_destroy(map->map[i]);
     }
     free(map);
     return NULL;

@@ -1,4 +1,5 @@
 #include "file_ops.h"
+#include "errors.h"
 
 FILE* open_file(const char* file_name, char* file_ext, char* mode) {
     FILE* fp;
@@ -16,13 +17,13 @@ FILE* open_file(const char* file_name, char* file_ext, char* mode) {
     return fp;
 }
 
-char* read_line(FILE* file, int max_read, char* buffer) {
+char* read_line(FILE* file, int max_read, char* buffer, int* err) {
     char* line = fgets(buffer, max_read, file);
     if (NULL == line)  {
         return NULL;
     }
     if (line[max_read-1] != '\n') {
-        /*error*/
+        *err = ERR_READ_BUFFER_OVERFLOW;
     }
     return line;
 }
