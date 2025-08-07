@@ -28,7 +28,7 @@ Map_t* map_init(const char* name) {
     return map;
 }
 
-MapEntry* get(Map_t* map, const char* key) {
+MapEntry* map_get(Map_t* map, const char* key) {
     unsigned int index = hash(key, strlen(key));
     MapEntry* entry = map->map[index];
     if (NULL == entry) {
@@ -45,7 +45,7 @@ MapEntry* get(Map_t* map, const char* key) {
     return NULL;
 }
 
-int insert(Map_t* map, MapEntry* entry) {
+int map_insert(Map_t* map, MapEntry* entry) {
     int success = FALSE;
     unsigned int index = hash(entry->identifier, strlen(entry->identifier));
     if (NULL == map->map[index]) {
@@ -82,7 +82,7 @@ int check_map(Map_t* map, const char* key) {
     return success;
 }
 
-MapEntry* pop(Map_t* map, const char* key) {
+MapEntry* map_pop(Map_t* map, const char* key) {
     unsigned int index = hash(key, strlen(key));
     MapEntry* prev = NULL;
     MapEntry* entry = map->map[index];

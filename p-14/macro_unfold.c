@@ -4,21 +4,23 @@
 #include "vector.h"
 #include "assembly_ops.h"
 #include "errors.h"
+#include "util.h"
 
 int save_file(char* file_name, Vector_t* line_array);
 int is_allowed_name(char* macro_name);
 int copy_lines(Vector_t * vec, MapEntry* entry, int src);
+void set_isError(int res, int* flag);
 
-int unfold_macro(char* file_name) {
+int unfold_macro(char* file_name, Vector_t* file_line_array) {
     char* line, *line_copy, *token;
     size_t actual_line_len;
-    int error = ERR_OK, lineno = 0, isError = ERR_OK;
+    int error = ERR_OK, lineno = 0, isError = FALSE;
     int is_macro = FALSE;
     char buffer[MAX_READ] = {0};
     MapEntry* macro_entry = NULL;
     FILE* original;
     Map_t* macro_table;
-    Vector_t* file_line_array, *macro_lines;
+    Vector_t *macro_lines;
     original = open_file(file_name, ".as", "r");
     if (NULL == original) {
         return ERR_OOM;
@@ -28,17 +30,10 @@ int unfold_macro(char* file_name) {
         error = close_file(original);
         return ERR_OOM;
     }
-    file_line_array = VectorCreate(15, 5);
-    if (NULL == file_line_array) {
-        error = close_file(original);
-        macro_table = map_destroy(macro_table);
-        return ERR_OOM;
-    }
     macro_lines = VectorCreate(5, 2);
     if (NULL == macro_lines) {
         error = close_file(original);
         macro_table = map_destroy(macro_table);
-        VectorDestroy(file_line_array);
         return ERR_OOM;
     }
     while (((line = read_line(original, MAX_READ, buffer, &error)) != NULL) && !error) {
@@ -49,17 +44,17 @@ int unfold_macro(char* file_name) {
         actual_line_len = strlen(line) + 1;
         line_copy = (char*) malloc(sizeof(char) * actual_line_len);
         if (NULL == line_copy) {
-            close_file(original);
-            map_destroy(macro_table);
-            VectorDestroy(file_line_array);
+            error = close_file(original);
+            macro_table = map_destroy(macro_table);
             return ERR_OOM;
         }
         strcpy(line_copy, line);
         printf("line %5d:\t%s", lineno, line_copy);
         token = strtok(line, SPACES);
         if (check_map(macro_table, token)) {
-            macro_entry = get(macro_table, token);
-            copy_lines(file_line_array, macro_entry, 1);
+            macro_entry = map_get(macro_table, token);
+            error = copy_lines(file_line_array, macro_entry, 1);
+            set_isError(error, &isError);
             free(line_copy);
             line_copy = NULL;
             continue;
@@ -71,16 +66,19 @@ int unfold_macro(char* file_name) {
                 macro_entry = entry_init(token, 0, 0, NULL, MACRO);
                 if (NULL == macro_entry) {
                     error = ERR_OOM;
+                    set_isError(error, &isError);
                 }
                 is_macro = TRUE;
             }
             else {
                 error = ERR_ILLEGAL_TOKEN;
+                set_isError(error, &isError);
             }
             token = strtok(NULL, SPACES);
             if (NULL != token) {
                 macro_entry = entry_destroy(macro_entry);
                 error = ERR_ILLEGAL_TOKEN;
+                set_isError(error, &isError);
             }
             free(line_copy);
             line_copy = NULL;
@@ -88,10 +86,13 @@ int unfold_macro(char* file_name) {
         else if (token && strcmp(token, "mcroend") == 0) {
             is_macro = FALSE;
             error = copy_lines(macro_lines, macro_entry, 0);
-            error = !insert(macro_table, macro_entry);
+            set_isError(error, &isError);
+            error = !map_insert(macro_table, macro_entry);
+            set_isError(error, &isError);
             if (macro_entry) print_entry(macro_entry, -1);
             printf("inserting entry %s was a %s\n", macro_entry->identifier, (error) ?"success" : "failure");
             error = VectorClear(macro_lines);
+            set_isError(error, &isError);
             token = strtok(NULL, SPACES);
             if (NULL != token) {
                 error = ERR_ILLEGAL_TOKEN;
@@ -101,29 +102,33 @@ int unfold_macro(char* file_name) {
         }
         else if (is_macro && !error){
             error = VectorAdd(macro_lines, line_copy);
+            set_isError(error, &isError);
         }
         else if (error) {
             macro_entry = entry_destroy(macro_entry);
         }
         else {
             error = VectorAdd(file_line_array, line_copy);
+            set_isError(error, &isError);
         }
     }
 
     printf("------------------------\nfile line array\n");
     VectorPrint(file_line_array);
     
-    if (feof(original) && !error) {
+    if (feof(original) && !error && !isError) {
         error = close_file(original);
+        set_isError(error, &isError);
         error = save_file(file_name, file_line_array);
+        set_isError(error, &isError);
     } 
     else {
         error = ferror(original);
+        set_isError(error, &isError);
     }
     print_map(macro_table);
 
     macro_table = map_destroy(macro_table);
-    VectorDestroy(file_line_array);
     VectorDestroy(macro_lines); 
 
     return isError;
@@ -197,4 +202,10 @@ int save_file(char* file_name, Vector_t* line_array) {
     } 
     error = close_file(newf);
     return error;
+}
+
+void set_isError(int res, int* flag){
+    if (!(*flag)) {
+        *flag = res;
+    }
 }

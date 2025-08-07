@@ -5,9 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef MAX_READ
-#define MAX_READ 82
-#endif
 
 /* Forward declaration:*/
 typedef struct Vector Vector_t;

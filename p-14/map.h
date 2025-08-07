@@ -48,16 +48,16 @@ MapEntry* entry_init(const char* label, size_t len,
 MapEntry* empty_entry_init(); 
 
 /*retrieve an entry from map, NULL for failure*/
-MapEntry* get(Map_t* map, const char* key);
+MapEntry* map_get(Map_t* map, const char* key);
 
 /*insert an entry to a map, returns 1 for success and 0 for failure*/
-int insert(Map_t* map, MapEntry* entry);
+int map_insert(Map_t* map, MapEntry* entry);
 
 /*check if key is in the map, returns 1 for success and 0 for failure*/
 int check_map(Map_t* map, const char* key);
 
 /*remove an entry from map, returns the entry, NULL on failure*/
-MapEntry* pop(Map_t* map, const char* key);
+MapEntry* map_pop(Map_t* map, const char* key);
 
 /*frees the map and all entries within it*/
 void* map_destroy(Map_t* map);

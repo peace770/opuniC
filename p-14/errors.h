@@ -6,13 +6,6 @@
 #include <string.h>
 #include <errno.h>
 
-#ifndef MIN
-#define MIN(x,y) (((x)>(y))? (y) : (x))
-#endif
-#ifndef MAX
-#define MAX(x,y) (((x)>(y))? (x) : (y))
-#endif
-
 /*enum for custom error codes*/
 typedef enum {
     ERR_OK = 0,
