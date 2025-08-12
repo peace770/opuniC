@@ -1,5 +1,4 @@
 #ifndef ERROR_H
-#define ERROR_H 1
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,4 +38,5 @@ int add_error_to_aggregate(ErrorAggregator* error_aggregator, int code,
 /*prints every error that was gathered while running the program*/
 void print_errors(ErrorAggregator* error_aggregator);
 
+#define ERROR_H 1
 #endif

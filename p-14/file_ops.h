@@ -1,5 +1,5 @@
-#ifndef FILE_OPS_H
-#define FILE_OPS_H 1
+#ifndef __FILE_OPS_H__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,4 +21,5 @@ int write_line(FILE* file, char* buffer);
 /*wraps fclose() returns 0 on success, EOF on fail. */
 int close_file(FILE* file);
 
+#define __FILE_OPS_H__ 
 #endif

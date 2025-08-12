@@ -1,17 +1,11 @@
 #include "macro_unfold.h"
-#include "map.h"
-#include "file_ops.h"
-#include "vector.h"
-#include "assembly_ops.h"
-#include "errors.h"
-#include "util.h"
 
 int save_file(char* file_name, Vector_t* line_array);
 int is_allowed_name(char* macro_name);
 int copy_lines(Vector_t * vec, MapEntry* entry, int src);
 void set_isError(int res, int* flag);
 
-int unfold_macro(char* file_name, Vector_t* file_line_array) {
+int unfold_macro(char* file_name, Vector_t* file_line_array, Map_t* macro_table) {
     char* line, *line_copy, *token;
     size_t actual_line_len;
     int error = ERR_OK, lineno = 0, isError = FALSE;
@@ -19,21 +13,14 @@ int unfold_macro(char* file_name, Vector_t* file_line_array) {
     char buffer[MAX_READ] = {0};
     MapEntry* macro_entry = NULL;
     FILE* original;
-    Map_t* macro_table;
     Vector_t *macro_lines;
     original = open_file(file_name, ".as", "r");
     if (NULL == original) {
         return ERR_OOM;
     }
-    macro_table = map_init("macros");
-    if (NULL == macro_table) {
-        error = close_file(original);
-        return ERR_OOM;
-    }
     macro_lines = VectorCreate(5, 2);
     if (NULL == macro_lines) {
         error = close_file(original);
-        macro_table = map_destroy(macro_table);
         return ERR_OOM;
     }
     while (((line = read_line(original, MAX_READ, buffer, &error)) != NULL) && !error) {
@@ -45,7 +32,6 @@ int unfold_macro(char* file_name, Vector_t* file_line_array) {
         line_copy = (char*) malloc(sizeof(char) * actual_line_len);
         if (NULL == line_copy) {
             error = close_file(original);
-            macro_table = map_destroy(macro_table);
             return ERR_OOM;
         }
         strcpy(line_copy, line);
@@ -128,7 +114,6 @@ int unfold_macro(char* file_name, Vector_t* file_line_array) {
     }
     print_map(macro_table);
 
-    macro_table = map_destroy(macro_table);
     VectorDestroy(macro_lines); 
 
     return isError;

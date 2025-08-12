@@ -1,5 +1,5 @@
-#ifndef HASHMAP_H
-#define HAHSMAP_H 1
+#ifndef __HASHMAP_H__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -8,30 +8,35 @@
 #include <ctype.h>
 #include "tagged_union.h"
 
-#if !defined(TRUE) && !defined(FALSE)
-#define TRUE 1
-#define FALSE 0
+#ifndef __UTIL_H__
+#include "util.h"
 #endif
 
 #define HASHMAP_SIZE 128
 #define HASH_PRIME 1990661
 
-typedef struct MapMember* MapLink;
+#ifndef MAP_ENTRY
+typedef struct MapMember MapEntry;
 
-typedef struct MapMember
+struct MapMember
 {
-    MapLink next;
+    MapEntry* next;
     char* identifier;
     Tunion node_data;
     unsigned int start_address;
     size_t len;
-} MapEntry;
+};
+#define MAP_ENTRY 1
+#endif
 
+#ifndef MAP_T
 typedef struct Map
 {
     MapEntry* map[HASHMAP_SIZE];
     char* name;
 } Map_t;
+#define MAP_T 1
+#endif
 
 /*initialize a map, returns a pointer to the map, NULL on failure*/
 Map_t* map_init(const char* name);
@@ -69,4 +74,5 @@ void print_entry(MapEntry* entry, int i);
 
 void print_map(Map_t* map);
 
+#define __HAHSMAP_H__
 #endif

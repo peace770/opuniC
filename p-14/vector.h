@@ -1,5 +1,4 @@
 #ifndef __VECTOR_H__
-#define __VECTOR_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,4 +33,5 @@ int  VectorClear(Vector_t* vector);
 
 void VectorPrint(Vector_t* vector); 
 
+#define __VECTOR_H__
 #endif /*__VECTOR_H__*/

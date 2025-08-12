@@ -1,58 +1,25 @@
-#ifndef ASSEMBLY_OPS_H
-#define ASSEMBLY_OPS_H 1
+#ifndef __ASSEMBLY_OPS_H__
+#include <stdlib.h>
 
-const char* disallowed_names[] =
-{
-    "mov",
-    "cmp",
-    "add",
-    "sub",
-    "lea",
-    "clr",
-    "not",
-    "inc",
-    "dec",
-    "jmp",
-    "bne",
-    "jsr",
-    "red",
-    "prn",
-    "rts",
-    "stop",
-    "data",
-    "string",
-    "mat",
-    "entry",
-    "extern",
-    "PSW",
-    "r0",
-    "r1",
-    "r2",
-    "r3",
-    "r4",
-    "r5",
-    "r6",
-    "r7",
-};
+#ifndef __UTIL_H__
+#include "util.h"
+#endif
 
-const char* assembly_ops[] = 
-{
-    "mov",
-    "cmp",
-    "add",
-    "sub",
-    "lea",
-    "clr",
-    "not",
-    "inc",
-    "dec",
-    "jmp",
-    "bne",
-    "jsr",
-    "red",
-    "prn",
-    "rts",
-    "stop",
-};
 
+typedef struct op {
+    const int code;
+    const char* name;
+    const unsigned int src_op;
+    const unsigned int dst_op;
+    const unsigned int* src_add;
+    const unsigned int* dst_add;
+} op_t;
+
+const op_t* get_op_details(char* name);
+
+extern char* disallowed_names[35];
+
+extern const op_t assembly_ops[16];
+
+#define __ASSEMBLY_OPS_H__
 #endif

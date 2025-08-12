@@ -1,4 +1,4 @@
-#ifndef __MACRO_UNFOLD_H__
+#ifndef __FIRST_PASS_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,19 +19,15 @@
 #include "util.h"
 #endif
 
-#ifndef __ASSEMBLY_OPS_H__
-#include "assembly_ops.h"
-#endif
-
 #ifndef __ERROR_H__
 #include "errors.h"
 #endif
 
-#ifndef __FILE_OPS_H__
-#include "file_ops.h"
+#ifndef __ASSEMBLY_OPS_H__
+#include "assembly_ops.h"
 #endif
 
-int unfold_macro(char* file_name, Vector_t* file_line_array, Map_t* macro_table);
+int first_pass(Map_t* symbol_table, Vector_t* file_line_array);
 
-#define __MACRO_UNFOLD_H__
+#define __FIRST_PASS_H__
 #endif

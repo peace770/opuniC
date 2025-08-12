@@ -1,7 +1,15 @@
-#include "map.h"
-#include "macro_unfold.h"
+#ifndef __ERROR_H__
 #include "errors.h"
+#endif
+#ifndef __HASHMAP_H__
+#include "map.h"
+#endif
+#ifndef __VECTOR_H__
 #include "vector.h"
+#endif
+
+#include "macro_unfold.h"
+#include "first_pass.h"
 
 int handle_file(char* file_name);
 void print_no_args_massage(const char* prog_name);
@@ -24,23 +32,25 @@ int handle_file(char* file_name) {
     int error = ERR_OK, isError = FALSE;
     Vector_t* file_line_array;
     MapEntry* entry = NULL;
-    FILE* original;
     Map_t* symbol_table;
     file_line_array = VectorCreate(15, 5);
     if (NULL == file_line_array) {
         return ERR_OOM;
     }
-    isError = unfold_macro(file_name, file_line_array);
-    if (isError) {
-        VectorDestroy(file_line_array);
-        return 1;
-    }
-    symbol_table = map_init("macros");
+    symbol_table = map_init("symbols");
     if (NULL == symbol_table) {
         VectorDestroy(file_line_array);
         return ERR_OOM;
     }
-    isError = first_pass(symbol_table, file_line_array);    
+    isError = unfold_macro(file_name, file_line_array, symbol_table);
+    if (isError) {
+        VectorDestroy(file_line_array);
+        symbol_table = map_destroy(symbol_table);
+        return 1;
+    }
+    isError = first_pass(symbol_table, file_line_array); 
+    isError = (isError) ? TRUE : second_pass(symbol_table, file_line_array);
+    isError = (isError) ? TRUE : save_output_files(symbol_table);
     return 0;
 }
 

@@ -2,7 +2,8 @@
 #include "util.h"
 
 const char* error_description[] = {
-
+    "OK",
+    "out of memory",
 };
 
 typedef struct err
@@ -49,12 +50,12 @@ void* destroy_error(Error* err) {
     if (!err) {
         return NULL;
     }
-    free(err->code_file);
-    free(err->in_file);
-    free(err->func);
-    free(err->line_content);
-    free(err->msg);
-    free(err);
+    free((void*) err->code_file);
+    free((void*) err->in_file);
+    free((void*) err->func);
+    free((void*) err->line_content);
+    free((void*) err->msg);
+    free((void*) err);
     return NULL;
 }
 
