@@ -6,7 +6,11 @@
 #include <stdlib.h>
 #endif
 
-typedef enum {NONE = -1, DATA, STRING, MAT, ENTRY, EXTERN, MACRO, CODE} dataTypes;
+#ifndef __ERROR_H__
+#include "errors.h"
+#endif
+
+typedef enum data_types {NONE = -1, DATA, STRING, MAT, ENTRY, EXTERN, MACRO, CODE} dataTypes;
 
 typedef struct tagged_union
 {
@@ -27,5 +31,7 @@ typedef struct tagged_union
  and a type from dataTypes enum and void pointer
 to the data. returns a non negative integer on success, -1 on failure*/
 int fill_union(Tunion* Union, dataTypes type, void* dataptr);
+
+int determinate_type(char* token, int *dataType);
 
 #endif

@@ -71,3 +71,34 @@ const op_t* get_op_details(char* name) {
     }
     return NULL;
 }
+
+int is_op_check(char* token) {
+    int i;
+    for (i = 0; i < ARRAY_SIZE(assembly_ops); i++) {
+        if (strcmp(token, assembly_ops[i].name) == 0) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+int is_allowed_name(char* name) {
+    int i;
+    for (i = 0; i < ARRAY_SIZE(disallowed_names); i++){
+        if (strcmp(name, disallowed_names[i]) == 0){
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+int is_data(char* name) {
+    if (strcmp(".data", name) == 0 || strcmp(".string", name) == 0 || strcmp(".mat", name) == 0) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+int analyze_op(char* type, MapEntry* entry, int* mem_address, MemImage* mem_image) {
+    
+}

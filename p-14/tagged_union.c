@@ -47,3 +47,27 @@ int fill_union(Tunion* Union, dataTypes type, void* dataptr) {
     }
     return found;
 }
+
+int determinate_type(char* token, int *dataType) {
+    if (strcmp(".data", token) == 0) {
+        dataType = DATA;
+    }
+    else if (strcmp(".string", token) == 0) {
+        dataType = STRING;
+    }
+    else if (strcmp(".mat", token) == 0) {
+        dataType = MAT;
+    }
+    else if (strcmp(".entry", token) == 0) {
+        dataType = ENTRY;
+    }
+    else if (strcmp(".extern", token) == 0) {
+        dataType = EXTERN;
+    }
+    else {
+        dataType = NONE;
+        return ERR_ILLEGAL_OPERATION;
+    }
+    return ERR_OK;
+}
+ 

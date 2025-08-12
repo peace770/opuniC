@@ -67,3 +67,10 @@ int validate_label(char* input, char* ouput) {
     ouput = strdup(input+1);
     return 0;
 }
+
+void set_isError(int *res, int* flag) {
+    if (!(*flag)) {
+        *flag = *res;
+    }
+    *res = 0;
+}

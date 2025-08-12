@@ -7,6 +7,9 @@
 #ifndef __VECTOR_H__
 #include "vector.h"
 #endif
+#ifndef __MEM_IMAGE_H__
+#include "mem_image.h"
+#endif
 
 #include "macro_unfold.h"
 #include "first_pass.h"
@@ -33,6 +36,9 @@ int handle_file(char* file_name) {
     Vector_t* file_line_array;
     MapEntry* entry = NULL;
     Map_t* symbol_table;
+    unsigned int* DCF, *ICF;
+    MemImage* dataImage = &data_image;
+    MemImage* instructionImage = &instruction_image;
     file_line_array = VectorCreate(15, 5);
     if (NULL == file_line_array) {
         return ERR_OOM;
@@ -48,7 +54,7 @@ int handle_file(char* file_name) {
         symbol_table = map_destroy(symbol_table);
         return 1;
     }
-    isError = first_pass(symbol_table, file_line_array); 
+    isError = first_pass(symbol_table, file_line_array, dataImage, instructionImage, DCF, ICF); 
     isError = (isError) ? TRUE : second_pass(symbol_table, file_line_array);
     isError = (isError) ? TRUE : save_output_files(symbol_table);
     return 0;

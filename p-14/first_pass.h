@@ -27,7 +27,11 @@
 #include "assembly_ops.h"
 #endif
 
-int first_pass(Map_t* symbol_table, Vector_t* file_line_array);
+#ifndef __MEM_IMAGE_H__
+#include "mem_image.h"
+#endif
+
+int first_pass(Map_t* symbol_table, Vector_t* file_line_array, MemImage* dataImage, MemImage* instructionImage, unsigned int* DCF,unsigned int* ICF);
 
 #define __FIRST_PASS_H__
 #endif
