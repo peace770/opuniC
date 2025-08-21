@@ -8,7 +8,7 @@
 typedef struct memImage
 {
     size_t nItems;
-    char mem_image[256][11];
+    char mem_image[256][6];
 } MemImage;
 
 extern MemImage data_image;

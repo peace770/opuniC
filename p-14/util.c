@@ -53,7 +53,7 @@ int validate_str(char* input, char* ouput) {
 int validate_label(char* input, char* ouput) {
     int i , len;
     len = strlen(input);
-    if (!isalpha((unsigned char) input[0]) || input[len-1] != ':') {
+    if (!isalpha((unsigned char) input[0]) || (input[len-1] != ':' && !isspace(input[len-2]))) {
         ouput = NULL;
         return 1;
     }
@@ -73,4 +73,16 @@ void set_isError(int *res, int* flag) {
         *flag = *res;
     }
     *res = 0;
+}
+
+char* strip_spaces(char* str) {
+    int i, j;
+    for (i = 0; i < strlen(str) && isspace(str[i]); i++);
+    str = str + i;
+    for (j = strlen(str)-1; j >= 0 && isspace(str[j]); i--);
+    str[j+1] = '\0';
+}
+
+unsigned int getbits(unsigned data, int pos, int width) {
+    return (data >> (pos+1-width)  & ~(~0 << width));
 }

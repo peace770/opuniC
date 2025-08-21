@@ -1,5 +1,6 @@
 #ifndef __ASSEMBLY_OPS_H__
 #include <stdlib.h>
+#include <ctype.h>
 
 #ifndef __UTIL_H__
 #include "util.h"
@@ -11,6 +12,10 @@
 
 #ifndef __MEM_IMAGE_H__
 #include "mem_image.h"
+#endif
+
+#ifndef __VEC_INT_H__
+#include "vec_int.h"
 #endif
 
 typedef struct op {
@@ -34,7 +39,10 @@ int is_allowed_name(char* name);
 
 int is_data(char* name);
 
+int analyze_data(char* type, MapEntry* entry, int* mem_address, MemImage* mem_image);
+
 int analyze_op(char* type, MapEntry* entry, int* mem_address, MemImage* mem_image);
+
 
 #define __ASSEMBLY_OPS_H__
 #endif

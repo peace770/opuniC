@@ -154,7 +154,6 @@ int  VectorClear(Vector_t* vector) {
         free(vector->items[i]);
     }
     vector->nItems = 0;  
-    VectorPrint(vector);
     return ERR_OK;
 }
 

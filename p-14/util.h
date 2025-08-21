@@ -41,5 +41,9 @@ int validate_label(char* input, char* ouput);
 
 void set_isError(int *res, int* flag);
 
+char* strip_spaces(char* str);
+
+unsigned int getbits(unsigned data, int pos, int width);
+
 #define __UTIL_H__
 #endif

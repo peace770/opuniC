@@ -33,7 +33,7 @@ int first_pass(Map_t* symbol_table, Vector_t* file_line_array, MemImage* dataIma
                             set_isError(&error, &isError);
                         }
                         if (!isError) {
-                            error = analyze_op(token, symbol_entry, &DC, dataImage);
+                            error = analyze_data(token, symbol_entry, &DC, dataImage);
                         }
                     }
                 }
