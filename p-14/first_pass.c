@@ -15,6 +15,9 @@ int first_pass(Map_t* symbol_table, Vector_t* file_line_array, MemImage* dataIma
         if (is_op_check(token)) {
             /*analyze op*/
         }
+        else if (is_pointer(token)) {
+                    /* code */
+        }
         else {
             if (token && (is_allowed_name(token) && strlen(token) <= MAX_IDENTIFIER_LEN) && !check_map(symbol_table, token)) {
                 error = validate_label(token, symbol);
@@ -38,7 +41,28 @@ int first_pass(Map_t* symbol_table, Vector_t* file_line_array, MemImage* dataIma
                     }
                 }
                 else if (is_pointer(token)) {
-                    /* code */
+                    if (isSymbol) {
+                        /*warning*/
+                    }
+                    error = determinate_type(token, &dataType);
+                    set_isError(&error, &isError);
+                    if (!isError) {
+                        token = strtok(NULL, SPACES);
+                        if (token && (is_allowed_name(token) && strlen(token) <= MAX_IDENTIFIER_LEN)) {
+                            error = validate_label(token, symbol);
+                            if (!error) {
+                                isSymbol = TRUE;
+                            }
+                            set_isError(&error, &isError);
+                        }
+                    }
+                    if (!isError) { 
+                        symbol_entry = entry_init(symbol, 0, 0, NULL, dataType);
+                        if (NULL == symbol_entry) {
+                            error = ERR_OOM;
+                            set_isError(&error, &isError);
+                        }
+                    }
                 }
                 else if (is_op_check(token)) {
                     /* code */

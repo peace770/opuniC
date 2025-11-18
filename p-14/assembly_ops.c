@@ -101,6 +101,13 @@ int is_data(char* name) {
     return FALSE;
 }
 
+int is_pointer(char* name) {
+    if (strcmp(".entry", name) == 0 || strcmp(".extern", name) == 0) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
 int analyze_data(char* type, MapEntry* entry, int* mem_address, MemImage* mem_image) {
     VecInt_t* elems;
     char* token, *raw_data, *str;
